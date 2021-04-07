@@ -1,0 +1,16 @@
+db.customer.insertMany([ {cust_id:"A111", amount:500, status:"A" },{ cust_id:"A111", amount:100, status:"A" }, { cust_id:"B111", amount:100, status:"A" }, { cust_id:"A111", amount:150, status:"D" } ] )
+
+db.customer.mapReduce( function(){ emit(this.cust_id, this.amount); },
+ function(key,value){
+ return Array.sum(value)
+ },
+{ query:{status:"A"}, out:"order_details"})
+
+
+This will not work ->
+
+db.customer.mapReduce( function(){ emit(this.cust_id, this.amount); },
+ function(key,value){
+ return Array.max(value)
+ },
+{ query:{status:"A"}, out:"order_details"})
