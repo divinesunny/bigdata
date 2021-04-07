@@ -1,0 +1,66 @@
+db.customer.aggregate([ { $match: {status:"A"} }, {$group: { _id:"cust_id" , total: {$sum:"$amount"} } } ])
+{ "_id" : "B111", "total" : 100 }
+{ "_id" : "A111", "total" : 600 }
+
+
+
+ db.customer.aggregate([
+    { $match: { status: "A" } },
+    { $group: { _id: "$cust_id", total: { $sum: "$amount" } } }
+ ])
+{ "_id" : "B111", "total" : 100 }
+{ "_id" : "A111", "total" : 600 }
+
+
+
+
+db.customer.aggregate( { $match: {status: "A"} })
+{ "_id" : ObjectId("606beb16663c1514aac09ea5"), "cust_id" : "A111", "amount" : 500, "status" : "A" }
+{ "_id" : ObjectId("606beb16663c1514aac09ea6"), "cust_id" : "A111", "amount" : 100, "status" : "A" }
+{ "_id" : ObjectId("606beb16663c1514aac09ea7"), "cust_id" : "B111", "amount" : 200, "status" : "A" }
+
+
+
+
+ db.customer.aggregate([
+   { $group: { _id:"$cust_id", "max_value": {$max:"$amount"} } }
+ ])
+
+{ "_id" : "B111", "max_value" : 100 }
+{ "_id" : "A111", "max_value" : 500 }
+
+
+
+db.customer.aggregate([
+ { $project: {cust_id:1,status:1} }
+])
+{ "_id" : ObjectId("606beb16663c1514aac09ea5"), "cust_id" : "A111", "status" : "A" }
+{ "_id" : ObjectId("606beb16663c1514aac09ea6"), "cust_id" : "A111", "status" : "A" }
+{ "_id" : ObjectId("606beb16663c1514aac09ea7"), "cust_id" : "B111", "status" : "A" }
+{ "_id" : ObjectId("606beb16663c1514aac09ea8"), "cust_id" : "A111", "status" : "D" }
+
+
+
+db.customer.aggregate({$limit:3})
+{ "_id" : ObjectId("606beb16663c1514aac09ea5"), "cust_id" : "A111", "amount" : 500, "status" : "A" }
+{ "_id" : ObjectId("606beb16663c1514aac09ea6"), "cust_id" : "A111", "amount" : 100, "status" : "A" }
+{ "_id" : ObjectId("606beb16663c1514aac09ea7"), "cust_id" : "B111", "amount" : 100, "status" : "A" }
+
+
+
+ db.customer.aggregate([
+  { $project: {cust_id:1,status:1,_id:0} }
+ ])
+{ "cust_id" : "A111", "status" : "A" }
+{ "cust_id" : "A111", "status" : "A" }
+{ "cust_id" : "B111", "status" : "A" }
+{ "cust_id" : "A111", "status" : "D" }
+
+
+
+> db.customer.aggregate([
+...  { $match: {status:"A"}}, { $group: {_id:"$cust_id", "total_sum" :{ $sum:"$amount" } } }
+... ])
+
+{ "_id" : "B111", "total_sum" : 100 }
+{ "_id" : "A111", "total_sum" : 600 }
